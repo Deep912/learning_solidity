@@ -53,6 +53,12 @@ contract twitter {
         tweets[author][id].likes++;
     }
 
+    function unlikeTweet(address author , uint256 id) external {
+        require(tweets[author][id].id == id , "post doesnt exist!");
+
+        tweets[author][id].likes--;
+    }
+
     function getTweet( uint _i)public view returns (Tweet memory)  {
         return tweets[msg.sender][_i];
     }
