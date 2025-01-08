@@ -55,7 +55,7 @@ contract twitter {
 
     function unlikeTweet(address author , uint256 id) external {
         require(tweets[author][id].id == id , "post doesnt exist!");
-
+        require(tweets[author][id].likes > 0 , "post has no likes");
         tweets[author][id].likes--;
     }
 
