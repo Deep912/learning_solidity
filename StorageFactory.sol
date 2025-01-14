@@ -8,11 +8,16 @@ pragma solidity ^0.8.26;
 //importing specified contract
 import {simple} from "./simpleStorage.sol";
 
-contract StorageFactory{
 
-    simple public simpleStorage;
+contract StorageFactory{
+    //when function deploys new contract it will over write old contract (values etc)
+    // simple public simpleStorage;
+
+//now here we are creating list/array so we can keep track of deployment and it wont over write old
+    simple[] public listOfSimpleStorageContracts;
 
     function createSimpleStorageContract() public  {
-        simpleStorage = new simple();
+        simple newSimpleContract = new simple();
+        listOfSimpleStorageContracts.push(newSimpleContract);
     }
 }
