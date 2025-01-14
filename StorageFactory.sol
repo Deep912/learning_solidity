@@ -1,38 +1,18 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.26;
 
-contract SimpleStorage {
-    uint256 myFavoriteNumber;
 
-    struct Person {
-        uint256 favoriteNumber;
-        string name;
-    }
-    // uint256[] public anArray;
-    Person[] public listOfPeople;
+//importing whole file 
+//import "./simpleStorage.sol";
 
-    mapping(string => uint256) public nameToFavoriteNumber;
-
-    function store(uint256 _favoriteNumber) public virtual {
-        myFavoriteNumber = _favoriteNumber;
-    }
-
-    function retrieve() public view returns (uint256) {
-        return myFavoriteNumber;
-    }
-
-    function addPerson(string memory _name, uint256 _favoriteNumber) public {
-        listOfPeople.push(Person(_favoriteNumber, _name));
-        nameToFavoriteNumber[_name] = _favoriteNumber;
-    }
-}
-
+//importing specified contract
+import {simple} from "./simpleStorage.sol";
 
 contract StorageFactory{
 
-    SimpleStorage public simpleStorage;
+    simple public simpleStorage;
 
     function createSimpleStorageContract() public  {
-        simpleStorage = new SimpleStorage();
+        simpleStorage = new simple();
     }
 }
