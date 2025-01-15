@@ -20,4 +20,17 @@ contract StorageFactory{
         simple newSimpleContract = new simple();
         listOfSimpleStorageContracts.push(newSimpleContract);
     }
+
+    function sfStore(uint256 _simpleStorageIndex , uint256 _newSimpleStorageNumber) public {
+        // address
+        // abi - Application binary interface
+        simple mySimpleStorage = listOfSimpleStorageContracts[_simpleStorageIndex];
+        mySimpleStorage.store(_newSimpleStorageNumber);
+    }
+
+    function sfGet(uint256 _simpleStorageIndex) public view returns (uint256) {
+    return listOfSimpleStorageContracts[_simpleStorageIndex].retrieve();
+    
 }
+}
+

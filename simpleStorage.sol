@@ -3,6 +3,7 @@ pragma solidity ^0.8.26;
 
 contract simple{
 // struct is used to define custom type
+uint256 myFavoriteNumber;
 struct Person{
     string name;
     uint256 number;
@@ -16,6 +17,16 @@ Person[] public listOfPeople;
 mapping (string => uint256) public nameToNumber;
 //static array
 // Person[3] public listOfPeople;
+
+//added virtual keyword so function can be override in another contract when using keyword override,
+// so virtual tells that this function can be override
+    function store(uint256 _favoriteNumber) public virtual {
+        myFavoriteNumber = _favoriteNumber;
+    }
+
+    function retrieve() public view returns (uint256) {
+        return myFavoriteNumber;
+    }
 
 function addPeople(string memory _name,uint256 _number) public {
     listOfPeople.push(Person( _name ,_number)); //pushing new people in Person
