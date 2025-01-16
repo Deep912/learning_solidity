@@ -24,22 +24,38 @@ import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/shared/interf
 
 contract FundMe{
     
-    uint256 public minimumUsd = 5;
+    uint256 public minimumUsd = 5 * 1e18;
+
+    address[] public funders;
+
+    //both are same one is good to understand
+    mapping(address funder => uint256 ammountFunded) public addressToAmmountFunded;
+    // mapping(address  => uint256) public addressToAmmountFunded;
+
     function fund() public payable {
         //allowing users to send $
         //have a minimum $ sent
         //1. how do we sned ETH to this contract?
-        require(msg.value >= 1e18, "didnt send enough RTH ");// 1e18 = 1 ETH = 
-
+        require(getConversionRate(msg.value) >= minimumUsd, "Didn't send enough ETH!");// 1e18 = 1 ETH = 
+        funders.push(msg.sender);
+        addressToAmmountFunded[msg.sender] = addressToAmmountFunded[msg.sender] + msg.value;
     }
     function getPrice() public view returns (uint256){
         //address 0x5fb1616F78dA7aFC9FF79e0371741a747D2a7F22
         //abi 
         AggregatorV3Interface PriceFeed = AggregatorV3Interface(0x5fb1616F78dA7aFC9FF79e0371741a747D2a7F22);
-        (,int256 price ,,,) = PriceFeed.latestRoundData(); //we will get a 18 decimal numgber by this so we have to convert it and also typecast
+        (,int256 price ,,,) = PriceFeed.latestRoundData(); //we will get a 8 decimal numgber by this so we have to add 10 and also typecast
+        //32000.00000000 
         return uint256(price * 1e10);
    }
-    function getConversionRate() public{}
+    function getConversionRate(uint256 ethAmmount) public view returns(uint256){
+        uint256 ethPrice = getPrice();
+
+        //(3200_000000000000000000 * 1000000000000000000) /1e18;
+        uint256 ethAmmountInUsd = (ethPrice * ethAmmount) / 1e18;
+        return ethAmmountInUsd;
+
+    }
 
     function getVersion() public view returns(uint256){
         return AggregatorV3Interface(0x5fb1616F78dA7aFC9FF79e0371741a747D2a7F22).version();
