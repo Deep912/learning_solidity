@@ -83,6 +83,10 @@ contract FundMe{
         _;
     }
 
+//The receive function is specifically designed to handle Ether transfers without data and is 
+//automatically invoked when Ether. The fallback function is used for handling calls with data or 
+//when the receive function is not defined. The fallback function can also handle Ether transfers 
+//with data.
     receive() external payable{
         fund();
     }
