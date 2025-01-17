@@ -23,9 +23,16 @@ import {PriceConvertor} from "./PriceConvertor.sol";
 
 contract FundMe{
     using PriceConvertor for uint256;
-    uint256 public minimumUsd = 5 * 1e18;
+    uint256 public constant MINIMUM_USD = 5 * 1e18;
 
     address[] public funders;
+
+//to save some gas we are using immutable keyword 
+    address public immutable i_owner;
+
+    constructor(){
+        i_owner = msg.sender;
+    }
 
     //both are same one is good to understand
     mapping(address funder => uint256 ammountFunded) public addressToAmmountFunded;
@@ -38,7 +45,7 @@ contract FundMe{
         //have a minimum $ sent
         //1. how do we sned ETH to this contract?
                 //we create our function here , msg.value will be set as input for getConversionRate()
-        require(msg.value.getConversionRate() >= minimumUsd, "Didn't send enough ETH!");// 1e18 = 1 ETH = 
+        require(msg.value.getConversionRate() >= MINIMUM_USD, "Didn't send enough ETH!");// 1e18 = 1 ETH = 
         funders.push(msg.sender);
 
         // both are same
@@ -46,7 +53,7 @@ contract FundMe{
         addressToAmmountFunded[msg.sender] += msg.value;
     }
 
-    function withdraw() public {
+    function withdraw() public onlyOwner {
        for (uint256 funderIndex = 0; funderIndex < funders.length; funderIndex++) {
             address funder = funders[funderIndex];
             addressToAmmountFunded[funder] = 0;
@@ -65,6 +72,11 @@ contract FundMe{
 
         //3 call
         (bool callSuccess,) = payable(msg.sender).call{value: address(this).balance}("");
+    }
+
+    modifier onlyOwner(){
+        require(msg.sender == i_owner, "back off!! you are not the owner");
+        _;
     }
     
 }
