@@ -21,6 +21,8 @@ import {PriceConvertor} from "./PriceConvertor.sol";
 //     returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound);
 // }
 
+error NotOwner();
+
 contract FundMe{
     using PriceConvertor for uint256;
     uint256 public constant MINIMUM_USD = 5 * 1e18;
@@ -75,8 +77,18 @@ contract FundMe{
     }
 
     modifier onlyOwner(){
-        require(msg.sender == i_owner, "back off!! you are not the owner");
+        // require(msg.sender == i_owner, "back off!! you are not the owner");
+        //using custome error so we dont have to store string , so less gas 
+        if(msg.sender != i_owner){revert NotOwmer();}
         _;
+    }
+
+    receive() external payable{
+        fund();
+    }
+
+    fallback() external payable{
+        fund();
     }
     
 }
