@@ -3,7 +3,6 @@ pragma solidity ^0.8.26;
 import {PriceConvertor} from "./PriceConvertor.sol";
 //importing interface from github
 
-
 //either we copy whole code and past it like this to use or we can directly import it from github as shown above
 // interface AggregatorV3Interface {
 //   function decimals() external view returns (uint8);
@@ -51,7 +50,21 @@ contract FundMe{
        for (uint256 funderIndex = 0; funderIndex < funders.length; funderIndex++) {
             address funder = funders[funderIndex];
             addressToAmmountFunded[funder] = 0;
-       }    
+       }  
+    //    resetting the array
+       funders = new address[](0); 
+
+       //thee types to transffer fund from contract to wallet
+
+        //1. transffer
+        //this makes addpress payable payable(msg.sender) . its required to transffer funds
+        payable(msg.sender).transffer(address(this).balance);
+        //2.send
+        bool sendSuccess = payable(msg.sender).send(address(this).balance);
+        require(sendSuccess, "send failed");
+
+        //3 call
+        (bool callSuccess,) = payable(msg.sender).call{value: address(this).balance}("");
     }
     
 }
